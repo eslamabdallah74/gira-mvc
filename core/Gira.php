@@ -6,11 +6,11 @@ namespace gira\core;
  * Base core class for Gira
  * Author: Eslam Abdallah
  */
-class Gira 
+class Gira
 {
     public Request $request;
     public Router $router;
-    
+
     /**
      * __construct
      *
@@ -18,13 +18,12 @@ class Gira
      */
     public function __construct()
     {
-        $this->request = new Request();
-        $this->router  = new Router($this->request);
-
-    } 
+        $this->request  = new Request();
+        $this->router   = new Router($this->request);
+    }
 
     public function run()
     {
-        $this->router->resolve();
+        echo $this->router->resolve();
     }
 }

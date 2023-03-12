@@ -4,11 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use gira\core\Gira;
 
 
-$app = new Gira();
-$app->router->get('/', function () {
-    return 'main page';
-});
-$app->router->get('/users', function () {
-    return 'user page';
-});
+$app = new Gira(dirname(__DIR__));
+$app->router->get('/','home');
+$app->router->get('/users', 'users');
+
 $app->run();
