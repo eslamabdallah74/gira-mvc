@@ -10,12 +10,19 @@ class Router
     public Request $request;
     public Response $response;
 
+    protected $layouts;
+    protected $pageNotFoundPath;
     protected array $routes = [];
+
+
+
 
     public function __construct(Request $request, Response $response)
     {
-        $this->request  = new Request();
-        $this->response = new Response();
+        $this->request              = new Request();
+        $this->response             = new Response();
+        $this->layouts              = __DIR__ . "/../views/layouts/main.php";
+        $this->$pageNotFoundPath    = __DIR__ . "/../views/" . Constant::NotFoundPageName . ".php";
     }
 
     /**
@@ -58,9 +65,11 @@ class Router
         if (!is_array($callback)) {
             return $this->render($callback);
         }
-        $getControllerAndMethod = $this->checkControllerAndMethod($callback);
         return call_user_func(
-            [$getControllerAndMethod['controller'], $getControllerAndMethod['method']],
+            [
+                $this->getControllerAndMethod($callback)['controller'],
+                $this->getControllerAndMethod($callback)['method']
+            ],
             $this->request
         );
     }
@@ -77,9 +86,15 @@ class Router
             echo "Method not found: " . "<b>{$method}</b>";
             return;
         }
+        return $callback;
+    }
+
+    public function getControllerAndMethod($callback)
+    {
+        $callback = $this->checkControllerAndMethod($callback);
         return [
-            'controller' => $controller,
-            'method' => $method
+            'controller' => new $callback[0],
+            'method'     => $callback[1]
         ];
     }
     /**
@@ -105,12 +120,11 @@ class Router
     protected function render404()
     {
         $statusCode = $this->response->setStatusCode(404);
-        $file = __DIR__ . "/../views/404.php";
-        if (!file_exists($file)) {
-            $this->createView($file, '404');
+        if (!file_exists($this->pageNotFoundPath)) {
+            $this->createView($this->pageNotFoundPath, Constant::NotFoundPageName);
         }
         ob_start();
-        include $file;
+        include $this->pageNotFoundPath;
         return ob_get_clean();
     }
 
@@ -138,12 +152,11 @@ class Router
      */
     protected function renderLayout()
     {
-        $file = __DIR__ . "/../views/layouts/main.php";
-        if (!file_exists($file)) {
-            $this->createView($file, 'main');
+        if (!file_exists($this->layouts)) {
+            $this->createView($this->layouts, 'main');
         }
         ob_start();
-        include_once $file;
+        include_once $this->layouts;
         return ob_get_clean();
     }
 

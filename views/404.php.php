@@ -1,1 +1,0 @@
-<h1>New 404.php File</h1>
