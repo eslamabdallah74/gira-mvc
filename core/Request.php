@@ -40,7 +40,7 @@ class Request
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
-    
+
     /**
      * getBody
      * @return array
@@ -49,15 +49,18 @@ class Request
     {
         $body = [];
         if ($this->getMethod() === 'get') {
-            foreach ($_GET as $key => $value) {
-                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
+            $this->filterInput($_GET, INPUT_GET, $body);
         }
         if ($this->getMethod() === 'post') {
-            foreach ($_POST as $key => $value) {
-                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
+            $this->filterInput($_POST, INPUT_POST, $body);
         }
         return $body;
+    }
+
+    protected function filterInput($superGlobalMethod, $type, $body = [])
+    {
+        foreach ($method as $key => $value) {
+            $body[$key] = filter_input($type, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+        }
     }
 }
