@@ -2,10 +2,20 @@
 
 namespace gira\controllers;
 
-class loginController
+use gira\core\Gira;
+use gira\core\Request;
+
+class loginController extends controller
 {
-    public function login()
+    public function index()
     {
-        return 'login done';
+        return $this->render('users');
+    }
+
+
+    public function login(Request $request)
+    {
+        $body = $request->getBody();
+        var_dump($body);
     }
 }

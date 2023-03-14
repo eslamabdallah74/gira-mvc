@@ -68,7 +68,7 @@ class Router
     protected function checkControllerAndMethod($callback)
     {
         if (!class_exists($callback[0])) {
-            echo "Controller not found: "."<b>". $callback[0] ."<b/>";
+            echo "Controller not found: " . "<b>" . $callback[0] . "<b/>";
             return;
         }
         $controller = new $callback[0]();
@@ -86,14 +86,14 @@ class Router
      * renderView
      * @param mixed $viewName
      */
-    protected function render($viewName)
+    public function render($viewName, $params = [])
     {
         if ($viewName === false) {
             return  $this->render404();
         }
         if (is_string($viewName)) {
             $layouts            = $this->renderLayout();
-            $viewContent        = $this->renderOnlyView($viewName);
+            $viewContent        = $this->renderOnlyView($viewName, $params);
             return  str_replace('{{ content }}', $viewContent, $layouts);
         }
     }
@@ -118,10 +118,12 @@ class Router
     /**
      * renderOnlyView
      * @param  mixed $viewName
-     * @return void
      */
-    protected function renderOnlyView($viewName)
+    protected function renderOnlyView($viewName, $params)
     {
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
         $file = __DIR__ . "/../views/{$viewName}.php";
         if (!file_exists($file)) {
             $this->createView($file, $viewName);
@@ -133,7 +135,6 @@ class Router
 
     /**
      * layoutContent
-     * @return void
      */
     protected function renderLayout()
     {
