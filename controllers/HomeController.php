@@ -4,7 +4,7 @@ namespace gira\controllers;
 
 use gira\core\Gira;
 
-class HomeController extends controller
+class HomeController extends Controller
 {
     public function index()
     {

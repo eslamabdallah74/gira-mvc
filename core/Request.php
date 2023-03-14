@@ -49,18 +49,19 @@ class Request
     {
         $body = [];
         if ($this->getMethod() === 'get') {
-            $this->filterInput($_GET, INPUT_GET, $body);
+            $body = $this->filterInput($_GET, INPUT_GET, $body);
         }
         if ($this->getMethod() === 'post') {
-            $this->filterInput($_POST, INPUT_POST, $body);
+            $body = $this->filterInput($_POST, INPUT_POST, $body);
         }
         return $body;
     }
 
-    protected function filterInput($superGlobalMethod, $type, $body = [])
+    protected function filterInput($superGlobalMethod, $type, $body)
     {
-        foreach ($method as $key => $value) {
+        foreach ($superGlobalMethod as $key => $value) {
             $body[$key] = filter_input($type, $key, FILTER_SANITIZE_SPECIAL_CHARS);
         }
+        return $body;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace gira\core;
 
+use gira\controllers\Controller;
 
 /**
  * Base core class for Gira
@@ -13,7 +14,7 @@ class Gira
     public Router $router;
     public Response $response;
     public static Gira $app;
-
+    public Controller $controller;
     /**
      * __construct
      *
@@ -25,6 +26,16 @@ class Gira
         $this->request    = new Request();
         $this->response   = new Response();
         $this->router     = new Router($this->request, $this->response);
+    }
+
+    public function setController(Controller $controller)
+    {
+        $this->controller = $controller;
+    }
+
+    public function getController()
+    {
+        return $this->controller;
     }
 
     public function run()

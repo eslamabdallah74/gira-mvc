@@ -15,14 +15,11 @@ class Router
     protected array $routes = [];
 
 
-
-
     public function __construct(Request $request, Response $response)
     {
         $this->request              = new Request();
         $this->response             = new Response();
-        $this->layouts              = __DIR__ . "/../views/layouts/main.php";
-        $this->$pageNotFoundPath    = __DIR__ . "/../views/" . Constant::NotFoundPageName . ".php";
+        $this->pageNotFoundPath     = __DIR__ . "/../views/" . Constant::NotFoundPageName . ".php";
     }
 
     /**
@@ -61,17 +58,29 @@ class Router
      */
     protected function getCallbackAndRender($path, $method)
     {
-        $callback = $this->routes[$method][$path] ?? false;
-        if (!is_array($callback)) {
-            return $this->render($callback);
+        $callback = $this->getCallback($path, $method);
+
+        if ($callback) {
+            $this->render($callback);
+            return call_user_func(
+                [
+                    $this->getControllerAndMethod($callback)['controller'],
+                    $this->getControllerAndMethod($callback)['method']
+                ],
+                $this->request
+            );
         }
-        return call_user_func(
-            [
-                $this->getControllerAndMethod($callback)['controller'],
-                $this->getControllerAndMethod($callback)['method']
-            ],
-            $this->request
-        );
+        if ($callback === false) {
+            $layouts            = $this->renderLayout();
+            $notFoundPage       = $this->render404();
+            return  str_replace('{{ content }}', $notFoundPage, $layouts);
+        }
+    }
+
+    protected function getCallback($path, $method)
+    {
+        $callback = $this->routes[$method][$path] ?? false;
+        return $callback;
     }
 
     protected function checkControllerAndMethod($callback)
@@ -80,9 +89,9 @@ class Router
             echo "Controller not found: " . "<b>" . $callback[0] . "<b/>";
             return;
         }
-        $controller = new $callback[0]();
+        Gira::$app->controller = new $callback[0]();
         $method     = $callback[1];
-        if (!method_exists($controller, $method)) {
+        if (!method_exists(Gira::$app->controller, $method)) {
             echo "Method not found: " . "<b>{$method}</b>";
             return;
         }
@@ -103,9 +112,6 @@ class Router
      */
     public function render($viewName, $params = [])
     {
-        if ($viewName === false) {
-            return  $this->render404();
-        }
         if (is_string($viewName)) {
             $layouts            = $this->renderLayout();
             $viewContent        = $this->renderOnlyView($viewName, $params);
@@ -115,7 +121,6 @@ class Router
 
     /**
      * render404
-     * @return void
      */
     protected function render404()
     {
@@ -152,11 +157,13 @@ class Router
      */
     protected function renderLayout()
     {
-        if (!file_exists($this->layouts)) {
-            $this->createView($this->layouts, 'main');
+        $layout = Gira::$app->controller->layout;
+        $file = __DIR__ . "/../views/layouts/$layout.php";
+        if (!file_exists($file)) {
+            $this->createView($file, $layout);
         }
         ob_start();
-        include_once $this->layouts;
+        include_once $file;
         return ob_get_clean();
     }
 
