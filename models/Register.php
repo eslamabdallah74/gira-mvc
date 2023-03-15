@@ -4,9 +4,9 @@ namespace gira\models;
 
 class Register extends Model
 {
-    public $name;
-    public $email;
-    public $password;
+    public $name = '';
+    public $email = '';
+    public $password = '';
 
     public function rules(): array
     {
