@@ -10,10 +10,11 @@ use gira\controllers\Controller;
  */
 class Gira
 {
+    public static Gira $app;
+
     public Request $request;
     public Router $router;
     public Response $response;
-    public static Gira $app;
     public Controller $controller;
     /**
      * __construct

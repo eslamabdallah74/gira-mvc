@@ -43,7 +43,7 @@ class Request
 
     /**
      * getBody
-     * @return array
+     * @return mixed
      */
     public function getBody()
     {
@@ -56,7 +56,14 @@ class Request
         }
         return $body;
     }
-
+    
+    /**
+     * filterInput
+     * @param  mixed $superGlobalMethod
+     * @param  mixed $type
+     * @param  mixed $body
+     * @return mixed
+     */
     protected function filterInput($superGlobalMethod, $type, $body)
     {
         foreach ($superGlobalMethod as $key => $value) {
