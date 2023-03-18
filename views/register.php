@@ -1,15 +1,12 @@
-<form method="post" action="">
-<div class="form-group">
-        <label for="exampleInputEmail1">Name</label>
-        <input type="name" name="name" class="form-control" aria-describedby="emailHelp" placeholder="Enter Name">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-    </div>
-    <button type="submit" class="btn btn-primary my-4">Submit</button>
-</form>
+<div class="card p-4">
+    <img class="card-img-top mb-4" src="https://i.ibb.co/dPRz139/pexels-luis-quintero-15778613.jpg" alt="Card image cap">
+    <h2>Register new account</h2>
+    <?php
+    use gira\core\form\Form;
+    $form = Form::begin('post', '');
+    echo $form->filed($model, 'name', 'Enter your name', 'text', 'Dev Alison');
+    echo $form->filed($model, 'email', 'Enter your email', 'email', 'Email@gmail.com');
+    echo $form->filed($model, 'password', 'Enter your password', 'password', '******');
+    $end = Form::end('Register');
+    ?>
+</div>
