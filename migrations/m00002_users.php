@@ -1,6 +1,7 @@
 <?php
 
-class create_users
+
+class m00002_users
 {
   public function up()
   {
