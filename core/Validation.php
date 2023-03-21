@@ -2,7 +2,9 @@
 
 namespace gira\core;
 
-abstract class Validation
+use gira\models\Model;
+
+abstract class Validation extends DbModel
 {
     abstract public function rules(): array;
 

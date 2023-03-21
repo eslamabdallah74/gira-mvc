@@ -4,7 +4,7 @@ namespace gira\controllers;
 
 use gira\core\Gira;
 use gira\core\Request;
-use gira\models\Register;
+use gira\models\User;
 
 class RegisterController extends Controller
 {
@@ -16,13 +16,13 @@ class RegisterController extends Controller
 
     public function registerForm()
     {
-        $RegisterModel = new Register();
+        $RegisterModel = new User();
         return $this->render('register', ['model' => $RegisterModel]);
     }
 
     public function register(Request $request)
     {
-        $RegisterModel = new Register();
+        $RegisterModel = new User();
         $data          = $request->getBody();
         $RegisterModel->loadData($data);
         if ($RegisterModel->validate() && $RegisterModel->Register()) {

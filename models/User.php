@@ -2,7 +2,7 @@
 
 namespace gira\models;
 
-class Register extends Model
+class User extends Model
 {
     public $name = '';
     public $email = '';
@@ -17,7 +17,18 @@ class Register extends Model
         ];
     }
 
+    public function attributes(): array
+    {
+        return ['name','email','password'];
+    }
+
+    public function tableName(): string
+    {
+        return 'users';
+    }
+
     public function Register()
     {
+        return $this->save();
     }
 }
