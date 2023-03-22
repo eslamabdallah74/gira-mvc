@@ -16,6 +16,7 @@ class Gira
     public Request $request;
     public Router $router;
     public Response $response;
+    public Session $session;
     public Controller $controller;
     /**
      * __construct
@@ -27,6 +28,7 @@ class Gira
         self::$app        = $this;
         $this->request    = new Request();
         $this->response   = new Response();
+        $this->session    = new Session();
         $this->router     = new Router($this->request, $this->response);
         $this->database   = new Database($config['db']);
     }
@@ -40,6 +42,8 @@ class Gira
     {
         return $this->controller;
     }
+
+
 
     public function run()
     {

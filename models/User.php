@@ -12,14 +12,17 @@ class User extends Model
     {
         return [
             'name'      => [self::REQUIRED],
-            'email'     => [self::REQUIRED, self::EMAIL],
-            'password'  => [self::REQUIRED, [self::MIN,'min' => 6]],
+            'email'     => [
+                self::REQUIRED, self::EMAIL,
+                [self::UNIQUE, 'class' => self::class, 'attribute' => 'email']
+            ],
+            'password'  => [self::REQUIRED, [self::MIN, 'min' => 6]],
         ];
     }
 
     public function attributes(): array
     {
-        return ['name','email','password'];
+        return ['name', 'email', 'password'];
     }
 
     public function tableName(): string
@@ -27,8 +30,9 @@ class User extends Model
         return 'users';
     }
 
-    public function Register()
+    public function save()
     {
-        return $this->save();
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+        return parent::save();
     }
 }

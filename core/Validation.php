@@ -15,6 +15,7 @@ abstract class Validation extends DbModel
     public const MAX       = 'max';
     public const EMAIL     = 'email';
     public const MATCH     = 'match';
+    public const UNIQUE    = 'unique';
 
 
     public function validate()
@@ -30,6 +31,7 @@ abstract class Validation extends DbModel
                 $this->validationRequired($ruleName, $value, $attribute, $rule);
                 $this->validationEmail($ruleName, $value, $attribute, $rule);
                 $this->validationMin($ruleName, $value, $attribute, $rule);
+                $this->validationUnique($ruleName, $value, $attribute, $rule);
             }
         }
         return empty($this->errors);
@@ -73,6 +75,24 @@ abstract class Validation extends DbModel
         }
     }
 
+    protected function validationUnique($ruleName, $value, $attribute, $rule)
+    {
+
+        if ($ruleName === self::UNIQUE) {
+            $className = $rule['class'];
+            $column    = $rule['attribute'] ?? $attribute;
+            $tableName = $className::tableName();
+            $statement = Gira::$app->database->prepare("SELECT $column FROM $tableName WHERE $column = :attr");
+            $statement->bindValue(":attr", $value);
+            $statement->execute();
+            $record   = $statement->fetchObject();
+            if ($record) {
+                $this->addError($attribute, self::UNIQUE, [$ruleName => $value]);
+            }
+        }
+    }
+
+
     public function addError(string $attribute, string $rules, $params = [])
     {
         $message = $this->errorMessages()[$rules] ?? 'none';
@@ -90,6 +110,7 @@ abstract class Validation extends DbModel
             self::MIN      => 'This filed should not be less than {min}',
             self::MAX      => 'This filed should not be greater than {min}',
             self::MATCH    => 'This filed not matching {match}',
+            self::UNIQUE   => '{unique} is already been taken',
         ];
     }
 

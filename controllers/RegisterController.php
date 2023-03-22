@@ -16,18 +16,19 @@ class RegisterController extends Controller
 
     public function registerForm()
     {
-        $RegisterModel = new User();
-        return $this->render('register', ['model' => $RegisterModel]);
+        $user = new User();
+        return $this->render('register', ['model' => $user]);
     }
 
     public function register(Request $request)
     {
-        $RegisterModel = new User();
+        $user          = new User();
         $data          = $request->getBody();
-        $RegisterModel->loadData($data);
-        if ($RegisterModel->validate() && $RegisterModel->Register()) {
-            return 'Data has been submitted';
+        $user->loadData($data);
+        if ($user->validate() && $user->save()) {
+            Gira::$app->session->setFlash('success','Thanks for register');
+            Gira::$app->response->redirect('/');
         }
-        return $this->render('register', ['model' => $RegisterModel]);
+        return $this->render('register', ['model' => $user]);
     }
 }
