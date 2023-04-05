@@ -26,9 +26,7 @@ class loginController extends Controller
         $user->loadData($body);
         if($user->validate() && $user->login())
         {
-            Gira::$app->session->setFlash('success','You have logged in successfully.');
-            $response->redirect('/');
-            
+            $response->redirectWithMessage('/','success','logged in');   
         }
     }
 }

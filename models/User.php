@@ -2,6 +2,8 @@
 
 namespace gira\models;
 
+use gira\core\Gira;
+
 class User extends Model
 {
     public $name = '';
@@ -34,5 +36,16 @@ class User extends Model
     {
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
         return parent::save();
+    }
+
+    public function login()
+    {
+        $user = User::findOne(['email'=>$this->email]);
+        if(!$user)
+        {
+            $this->addError('email','User not found');
+        }
+
+        Gira::$app->login();
     }
 }
