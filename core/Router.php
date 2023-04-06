@@ -67,7 +67,8 @@ class Router
                     $this->getControllerAndMethod($callback)['controller'],
                     $this->getControllerAndMethod($callback)['method']
                 ],
-                $this->request
+                $this->request,
+                $this->response
             );
         }
         if ($callback === false) {

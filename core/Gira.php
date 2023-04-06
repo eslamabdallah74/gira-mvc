@@ -18,6 +18,8 @@ class Gira
     public Response $response;
     public Session $session;
     public Controller $controller;
+    public ?DbModel $user;
+
     /**
      * __construct
      *
@@ -43,10 +45,13 @@ class Gira
         return $this->controller;
     }
 
-
-
     public function run()
     {
         echo $this->router->resolve();
+    }
+
+    public function login(DbModel $user)
+    {
+        $this->user = $user;
     }
 }

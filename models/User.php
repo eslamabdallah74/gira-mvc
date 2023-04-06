@@ -22,6 +22,11 @@ class User extends Model
         ];
     }
 
+    public function primaryKey(): string
+    {
+        return 'id';
+    }
+
     public function attributes(): array
     {
         return ['name', 'email', 'password'];
@@ -36,16 +41,5 @@ class User extends Model
     {
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
         return parent::save();
-    }
-
-    public function login()
-    {
-        $user = User::findOne(['email'=>$this->email]);
-        if(!$user)
-        {
-            $this->addError('email','User not found');
-        }
-
-        Gira::$app->login();
     }
 }

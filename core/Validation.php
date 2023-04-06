@@ -40,14 +40,14 @@ abstract class Validation extends DbModel
     protected function validationRequired($ruleName, $value, $attribute, $rule)
     {
         if ($ruleName === self::REQUIRED && !$value) {
-            $this->addError($attribute, self::REQUIRED);
+            $this->addErrorForRule($attribute, self::REQUIRED);
         }
     }
 
     protected function validationEmail($ruleName, $value, $attribute, $rule)
     {
         if ($ruleName === self::EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $this->addError($attribute, self::EMAIL);
+            $this->addErrorForRule($attribute, self::EMAIL);
         }
     }
 
@@ -55,7 +55,7 @@ abstract class Validation extends DbModel
     {
 
         if ($ruleName === self::MIN && strlen($value) < $rule['min']) {
-            $this->addError($attribute, self::MIN, $rule);
+            $this->addErrorForRule($attribute, self::MIN, $rule);
         }
     }
 
@@ -63,7 +63,7 @@ abstract class Validation extends DbModel
     {
 
         if ($ruleName === self::MAX && strlen($value) > $rule['max']) {
-            $this->addError($attribute, self::MAX, $rule);
+            $this->addErrorForRule($attribute, self::MAX, $rule);
         }
     }
 
@@ -71,7 +71,7 @@ abstract class Validation extends DbModel
     {
 
         if ($ruleName === self::MATCH && $value !== $this->{$rule['match']}) {
-            $this->addError($attribute, self::MATCH, $rule);
+            $this->addErrorForRule($attribute, self::MATCH, $rule);
         }
     }
 
@@ -87,13 +87,12 @@ abstract class Validation extends DbModel
             $statement->execute();
             $record   = $statement->fetchObject();
             if ($record) {
-                $this->addError($attribute, self::UNIQUE, [$ruleName => $value]);
+                $this->addErrorForRule($attribute, self::UNIQUE, [$ruleName => $value]);
             }
         }
     }
 
-
-    public function addError(string $attribute, string $rules, $params = [])
+    private function addErrorForRule(string $attribute, string $rules, $params = [])
     {
         $message = $this->errorMessages()[$rules] ?? 'none';
         foreach ($params as $key => $value) {
@@ -101,6 +100,13 @@ abstract class Validation extends DbModel
         }
         $this->errors[$attribute][] = $message;
     }
+
+
+    public function addError(string $attribute, string $message)
+    {
+        $this->errors[$attribute][] = $message;
+    }
+
 
     public function errorMessages()
     {
